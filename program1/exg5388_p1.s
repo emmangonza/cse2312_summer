@@ -6,10 +6,15 @@
 main:
    BL _scanf_num
    MOV R1, R0
+   PUSH {R1}
+
    BL _scanf_char
    MOV R4, R0
+
    BL _scanf_num
    MOV R2, R0
+
+   POP {R1}
 
 
    CMP R4, #'+'
