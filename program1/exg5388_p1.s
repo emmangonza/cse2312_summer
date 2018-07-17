@@ -4,45 +4,49 @@
 .func main
 
 main:
-   BL _scanf_num
+   BL _scanf_num          @scans for first parameter
    MOV R1, R0
-   PUSH {R1}
 
-   BL _scanf_char
-   MOV R4, R0
+   PUSH {R1}              @backup for first parameter
 
-   BL _scanf_num
+   BL _scanf_char         @scans for operation
+   MOV R3, R0
+
+   PUSH {R3}              @backup for operation
+
+   BL _scanf_num          @scans for second parameter
    MOV R2, R0
 
-   POP {R1}
+   POP {R3}               @restores operation value
+   POP {R1}               @restores first parameter value
 
-
-   CMP R4, #'+'
+   CMP R3, #'+'
    BLEQ _sum
 
-   CMP R4, #'-'
+   CMP R3, #'-'
    BLEQ _diff
 
-   CMP R4, #'*'
+   CMP R3, #'*'
    BLEQ _mult
 
-@   CMP R4, #'m'
-@   BLEQ _min
+   CMP R3, #'m'
+   BLEQ _min
 
-   CMP R4, #'q'
+   CMP R3, #'q'           @exits loop/program if 'q' is entered as the operation
    BLEQ _exit
 
-
-   MOV R1, R0
+   MOV R1, R0             @prints the result which would be the most recent value in R0
    BL _print
 
-   B main
+   BL _print_newline      @prints a new line after the result
+
+   B main                 @loops back
 
 _exit:
    MOV R7, #1
    SWI 0
 
-_scanf_num:
+_scanf_num:               @scan procedure for an int from scanf.s
    PUSH {LR}
    SUB SP, SP, #4
    LDR R0, =num_format_str
@@ -52,22 +56,28 @@ _scanf_num:
    ADD SP, SP, #4
    POP {PC}
 
-_scanf_char:
-   PUSH {LR}
-   SUB SP, SP, #4
-   LDR R0, =char_format_str
-   MOV R1, SP
-   BL scanf
-   LDR R0, [SP]
-   ADD SP, SP, #4
-   POP {PC}
+_scanf_char:              @non-scanf procedure for a char from compare_char.s
+   MOV R7, #3
+   MOV R0, #0
+   MOV R2, #1
+   LDR R1, =read_char
+   SWI 0
+   LDR R0, [R1]
+   AND R0, #0xFF
+   MOV PC, LR
 
-_print:
-   MOV R5, LR
+_print:                   @print procedure from printf.s
+   MOV R4, LR
    LDR R0, =print_str
    MOV R1, R1
    BL printf
-   MOV PC, R5
+   MOV PC, R4
+
+_print_newline:
+   MOV R4, LR
+   LDR R0, =newline
+   BL printf
+   MOV PC, R4
 
 _sum:
    MOV R0, R1
@@ -83,13 +93,14 @@ _mult:
    MUL R0, R1, R2
    MOV PC, LR
 
-@_min:
-@   CMP R1, R2
-@   MOVLT R0, R1
-@   MOVGT R0, R2
-@   MOV PC, LR
+_min:
+   CMP R1, R2
+   MOVLT R0, R1
+   MOVGT R0, R2
+   MOV PC, LR
 
 .data
 num_format_str:    .asciz   "%d"
-char_format_str:   .asciz   "%c"
+read_char:         .ascii   " "
 print_str:         .asciz   "%d"
+newline:           .ascii   "\n"
