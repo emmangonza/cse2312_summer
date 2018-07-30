@@ -35,10 +35,10 @@ _cnt_part:
 
    CMP R1, #0
 
-   MOVEQ R0, #1				@condition 1 (n == 0)
+   MOVEQ R0, #1			@condition 1 (n == 0)
    POPEQ {PC}
 
-   MOVLT R0, #0				@condition 2 (n < 0)
+   MOVLT R0, #0			@condition 2 (n < 0)
    POPLT {PC}
 
    CMP R2, #0				@condition 3 (m == 0)
@@ -52,7 +52,7 @@ _cnt_part:
    BL _cnt_part
    MOV R6, R0				@save result
 
-   POP {R2}				@restore n and m
+   POP {R2}				   @restore n and m
    POP {R1}
 
    PUSH {R6}
