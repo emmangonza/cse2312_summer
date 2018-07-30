@@ -8,14 +8,14 @@ main:
    CMP R0, #0
    BEQ _exit
    MOV R4, R0
-   MOV R1, R0				@R1 = n
 
    BL _scanf				@checks for second input
    CMP R0, #0
    BEQ _exit
    MOV R5, R0
-   MOV R2, R0				@R2 = m
 
+   MOV R1, R4				@R1 = n
+   MOV R2, R5				@R2 = m
    BL _cnt_part
 
    MOV R1, R0				@setup printf parameters
@@ -52,12 +52,16 @@ _cnt_part:
    BL _cnt_part
    MOV R6, R0				@save result
 
-   POP {R2}					@restore n and m
+   POP {R2}				@restore n and m
    POP {R1}
+
+   PUSH {R6}
 
    SUB R2, R2 ,#1			@m = m - 1
    BL _cnt_part
    MOV R7, R0				@save result
+
+   POP {R6}
 
    ADD R0, R6, R7			@add results together
    POP {PC}
