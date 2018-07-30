@@ -9,7 +9,7 @@ def count_partitions(n, m) :
 	elif m == 0 :
 		return 0
 	else :
-		return count_partitions(n - m, m) + count_partitions(n, m -1)
+		return count_partitions(n - m, m) + count_partitions(n, m - 1)
 
 #main
 n = 0
