@@ -6,7 +6,7 @@
 main:
    MOV R0, #0
 writeloop:
-   CMP R0, #100
+   CMP R0, #10
    BEQ writedone
    LDR R1, =a
    LSL R2, R0, #2
@@ -17,7 +17,7 @@ writeloop:
 writedone:
    MOV R0, #0
 readloop:
-   CMP R0, #100
+   CMP R0, #10
    BEQ readdone
    LDR R1, =a
    LSL R2, R0, #2
@@ -51,4 +51,4 @@ _printf:
 
 .balign 4
 a:              .skip       40
-printf_str:     .asciz      "a[%d] = %d\n"
+printf_str:     .asciz      "array_a[%d] = %d\n"
